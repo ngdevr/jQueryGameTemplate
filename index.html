@@ -111,7 +111,7 @@ function openPage(id){
 	}
 	$('#page'+id).show();
 }
-function openGame(id, type){
+function openGame(id){
 	var gameParams = localStorageManager.getGameParams();
 	gameParams.currentPage = id;
 	localStorageManager.setGameParams(gameParams);
@@ -138,11 +138,8 @@ $(window).on('load', function () {
 		gameParams.currentPage = 1;
 	}
 	
-	if(gameParams.currentPage == 4){
-		if(!gameParams.scoreColumns){
-			gameParams.scoreColumns = 4;
-		}
-		openGame(gameParams.currentPage, gameParams.scoreColumns);
+	if(gameParams.currentPage == 3){
+		openGame(gameParams.currentPage);
 	} else {
 		openPage(gameParams.currentPage);
 	}
