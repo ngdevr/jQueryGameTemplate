@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Game Template</title>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=no">
+    <style>
+        /* following two viewport lines are equivalent to meta viewport statement above, and is needed for Windows */
+        /* see http://www.quirksmode.org/blog/archives/2014/05/html5_dev_conf.html and http://dev.w3.org/csswg/css-device-adapt/ */
+        @-ms-viewport { width: 100vw ; min-zoom: 100% ; zoom: 100% ; }          @viewport { width: 100vw ; min-zoom: 100% zoom: 100% ; }
+        @-ms-viewport { user-zoom: fixed ; min-zoom: 100% ; }                   @viewport { user-zoom: fixed ; min-zoom: 100% ; }
+        /*@-ms-viewport { user-zoom: zoom ; min-zoom: 100% ; max-zoom: 200% ; }   @viewport { user-zoom: zoom ; min-zoom: 100% ; max-zoom: 200% ; }*/
+    </style>
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/custom.css">
+    <link rel="stylesheet" href="css/jquery-confirm.min.css">
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/jquery-confirm.min.js"></script>
+    <script src="js/storage.js"></script>
+
+    <script src="js/init-app.js"></script>	
+</head>
+<body>
+<div id="page1" style="display: none;">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12">
+                <img id="logo" class="img-responsive margin-auto" src="images/logo.png" alt="logo" />
+			</div>
+		</div>
+		<div class="row">
+            <div class="col-xs-12">
+				<div class="hot-container">
+					<a href="#" onclick="openPage(3)" class="btn btn-green">Play</a>
+				</div>	
+				<div class="hot-container">
+					<a href="#" onclick="openPage(2)" class="btn btn-red">Rules</a>
+				</div>	
+				<div class="hot-container">
+					<a href="#" class="btn btn-voilet">Leaderboard</a>
+				</div>	
+				<div class="hot-container">
+					<a href="#" class="btn btn-blue">Rate it</a>
+				</div>	
+				<div class="hot-container">
+					<a href="#" class="btn btn-blue">Share</a>
+				</div>	
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="page2" style="display: none;">
+<div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-2"><a href="#" onclick="openPage(1)"><span class="glyphicon glyphicon-circle-arrow-left"></span></a></div>
+            <div class="col-xs-8">
+                <p class="select-head">How to Play?</p>
+            </div>
+            <div class="col-xs-12">
+                <div id="player-instructions" class="player-inst">
+                    <h4>GAMEPLAY</h4>
+                    <p>
+                        Your Game Description!!
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="page3" style="display: none;">
+    <div class="container-fluid">
+        <div id="gametable" style="margin:auto;">
+			<div class="row" style="margin-top:10px;">
+				<div class="col-xs-2" class="margin-auto" style="height:40px;/*background-color:rgba(255, 255, 255, 0.5);*/">
+					 <a href="#" onclick="openPage(1)"><span class="glyphicon glyphicon-home"></span></a>
+				</div>
+				<div class="col-xs-2" class="margin-auto" style="height:40px;">
+					 <a id="newbutton" href="#"><span class="glyphicon glyphicon-repeat"></span></a>
+				</div>
+				<div class="col-xs-5" class="margin-auto" style="height:40px;">
+				</div>
+				<div class="col-xs-2" class="margin-auto" style="height:40px;">
+					 <a href="#" id="audiobutton"><span class="glyphicon glyphicon-volume-up"></span></a>
+				</div>
+			</div>	
+			<div class="row">
+				<div class="col-xs-12" id="gamearea">
+				<br/><br/>My Game
+				</div>
+			</div>
+        </div>
+    </div>
+    <!-- /page -->
+</div>
+
+<!-- Game Code -->
+<script src="js/game.js"></script>
+
+<script>
+var pageCount = 3;
+function openPage(id){
+	var gameParams = localStorageManager.getGameParams();
+	gameParams.currentPage = gameParams.currentPage? id: 1;
+	localStorageManager.setGameParams(gameParams);
+	for(var i = 1; i <= pageCount; i++){
+		$('#page'+i).hide();		
+	}
+	$('#page'+id).show();
+}
+function openGame(id, type){
+	var gameParams = localStorageManager.getGameParams();
+	gameParams.currentPage = id;
+	localStorageManager.setGameParams(gameParams);
+	for(var i = 1; i <= pageCount; i++){
+		$('#page'+i).hide();		
+	}
+	$('#page'+id).show();
+
+	startGame();
+	
+    var config = localStorageManager.getGameConfig();
+    if (config && config.playSounds){
+		$('#audiobutton span').removeClass("glyphicon-volume-off");
+        $('#audiobutton span').addClass("glyphicon-volume-up");     
+    } else {
+        $('#audiobutton span').removeClass("glyphicon-volume-up");
+        $('#audiobutton span').addClass("glyphicon-volume-off");         
+    }
+}
+
+$(window).on('load', function () {
+	var gameParams = localStorageManager.getGameParams();
+	if(!gameParams.currentPage){
+		gameParams.currentPage = 1;
+	}
+	
+	if(gameParams.currentPage == 4){
+		if(!gameParams.scoreColumns){
+			gameParams.scoreColumns = 4;
+		}
+		openGame(gameParams.currentPage, gameParams.scoreColumns);
+	} else {
+		openPage(gameParams.currentPage);
+	}
+	localStorageManager.setGameParams(gameParams);
+	attachEvents();
+});
+</script>
+
+    </body>
+</html>
